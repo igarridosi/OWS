@@ -4,7 +4,7 @@ import LoadingSpinner from './common/LoadingSpinner';
 import ErrorMessage from './common/ErrorMessage';
 import Button from './common/Button';
 
-const SearchBar = ({ onLocationSelect }) => {
+const SearchBar = ({ onLocationSelect, userSearch }) => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -36,13 +36,14 @@ const SearchBar = ({ onLocationSelect }) => {
       ) {
         const lat = parseFloat(result.lat);
         const lon = parseFloat(result.lon);
-        const displayName = result.display_name || result.name || trimmedQuery;
+        // Extract only the city/town/village for display
+        const displayName = address.city || address.town || address.village || trimmedQuery;
         console.log(`Geocoded "${trimmedQuery}" to: ${displayName} [${lat}, ${lon}]`);
         // Use a more appropriate zoom based on result type/importance
         let zoomLevel = 13;
         if (result.importance > 0.7) zoomLevel = 11;
         if (result.type === 'city' || result.type === 'administrative') zoomLevel = 12;
-        onLocationSelect(lat, lon, zoomLevel);
+        onLocationSelect(lat, lon, zoomLevel, displayName);
       } else {
         setError('Please enter a valid city name. Only cities, towns, or villages are allowed.');
       }
@@ -85,11 +86,14 @@ const SearchBar = ({ onLocationSelect }) => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex flex-col gap-2 items-center justify-center w-full">
-      <div className="flex w-full max-w-xl bg-white rounded-xl shadow-md px-2 py-2 gap-2 items-center border border-gray-200 focus-within:ring-2 focus-within:ring-gray-400 transition">
+    <form onSubmit={handleSearch} className="flex flex-col items-center md:items-start justify-center w-full">
+      <h1 className="text-2xl font-extrabold text-darkblue drop-shadow-lg mb-4 ">
+        {userSearch ? `Workout Spots in ${userSearch}...` : 'Find Workout Spots'}
+      </h1>
+      <div className="flex w-full max-w-xl bg-white rounded-xl shadow-md md:px-2 py-2 md:gap-2 items-center border border-gray-200 focus-within:ring-2 focus-within:ring-accent transition">
         <input
           type="text"
-          className="flex-1 border-none bg-transparent outline-none px-2 py-2 text-lg placeholder-gray-400"
+          className="flex-1 border-none bg-transparent outline-none px-2 py-2 text-lg placeholder-darkblue"
           placeholder="Search for a city or location"
           value={query}
           onChange={e => setQuery(e.target.value)}
