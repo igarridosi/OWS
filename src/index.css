@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/Fonts/OTF/ClashGrotesk-Regular.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ClashDisplayBold';
+    src: url('/Fonts/OTF/ClashGrotesk-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+.font-bold, .font-extrabold{
+    font-family: ClashDisplayBold, sans-serif;
+}
+
+.font-normal{
+    font-family: ClashDisplay, sans-serif;
+}
+
 @theme{
     --color-darkblue: #364153;
     --color-accent: #26A224;
@@ -30,4 +52,12 @@
 
 .mapcomponent{
     z-index: 1000 !important;
+}
+
+@media (max-width: 768px) {
+    .leaflet-popup-content-wrapper{
+        display: flex;
+        justify-content: center;
+        width: 200px !important;
+    }
 }

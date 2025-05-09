@@ -111,7 +111,7 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
               type="number"
               name="latitude"
               value={latlng.lat}
-              className="border rounded px-2 py-1 w-[10vw] bg-gray-100 text-gray-700"
+              className="border rounded px-2 py-1 w-[30vw] md:w-[10vw] bg-gray-100 text-gray-700"
               disabled
             />
           </div>
@@ -121,24 +121,25 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
               type="number"
               name="longitude"
               value={latlng.lng}
-              className="border rounded px-2 py-1 w-[10vw] bg-gray-100 text-gray-700"
+              className="border rounded px-2 py-1 w-[30vw] md:w-[10vw] bg-gray-100 text-gray-700"
               disabled
             />
           </div>
         </div>
       )}
       <label className="flex flex-col gap-1 text-white font-extrabold">
-        <p>Image (optional)</p>
+        <p>Image<span className="text-red-500"> *</span></p>
         <input
           type="file"
           name="image"
           accept="image/*"
           onChange={handleChange}
           className="border rounded px-2 py-1"
+          required
         />
       </label>
       <div className="flex gap-2 mt-2">
-        <Button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</Button>
+        <Button type="submit" className='px-4 py-2 bg-accent text-white block rounded hover:bg-accent transition-colors disabled:opacity-60' disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</Button>
         {onCancel && (
           <button type="button" onClick={onCancel} className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Cancel</button>
         )}

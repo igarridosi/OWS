@@ -115,13 +115,13 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
       {/* Spot source toggle */}
       <div className="flex gap-2 mb-2 absolute right-2 top-2 z-[1100]">
         <button
-          className={`px-3 py-1 rounded-l font-bold ${spotSource === 'osm' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
+          className={`px-3 py-1 rounded-l font-normal ${spotSource === 'osm' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
           onClick={() => setSpotSource('osm')}
         >
           OSM Spots
         </button>
         <button
-          className={`px-3 py-1 rounded-r font-bold ${spotSource === 'community' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
+          className={`px-3 py-1 rounded-r font-normal ${spotSource === 'community' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
           onClick={() => setSpotSource('community')}
         >
           Community Spots
@@ -129,7 +129,7 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
       </div>
       {/* Map style toggle button - always top right, above map */}
       <button
-        className="absolute bottom-3 right-2 z-[1100] bg-darkblue rounded-3xl text-white font-extrabold px-4 py-2 shadow-xl hover:bg-white hover:text-darkblue transition"
+        className="absolute bottom-3 right-2 z-[1100] bg-darkblue rounded-3xl text-white font-normal px-4 py-2 shadow-xl hover:bg-white hover:text-darkblue transition"
         style={{ minWidth: 120 }}
         onClick={() => setMapStyle(mapStyle === 'urban' ? 'satellite' : 'urban')}
       >
@@ -178,10 +178,10 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
                   }}
                 >
                   <div className="min-w-[200px] max-w-[260px] p-2">
-                    <div className="font-bold text-gray-700 text-lg mb-1 truncate">{spot.name || 'Workout Spot'}</div>
-                    {spot.tags?.sport && <div className="text-xs text-gray-500 mb-1"><b>Sport:</b> {spot.tags.sport}</div>}
-                    {spot.tags?.leisure && <div className="text-xs text-gray-500 mb-1"><b>Type:</b> {spot.tags.leisure}</div>}
-                    {spot.tags?.fitness_station && <div className="text-xs text-gray-500 mb-1"><b>Equipment:</b> {spot.tags.fitness_station}</div>}
+                    <div className="font-bold text-gray-700 text-lg ml-3 md:ml-0 mb-1 truncate">{spot.name || 'Workout Spot'}</div>
+                    {spot.tags?.sport && <div className="text-xs text-gray-500 mb-1 ml-3 md:ml-0"><b>Sport:</b> {spot.tags.sport}</div>}
+                    {spot.tags?.leisure && <div className="text-xs text-gray-500 mb-1 ml-3 md:ml-0"><b>Type:</b> {spot.tags.leisure}</div>}
+                    {spot.tags?.fitness_station && <div className="text-xs text-gray-500 mb-1 ml-3 md:ml-0"><b>Equipment:</b> {spot.tags.fitness_station}</div>}
                     <div className="flex flex-col items-center justify-center mt-4">
                     
                       <a href={spot.osmUrl} hidden={spotSource === 'community'} target="_blank" rel="noopener noreferrer" className=" bg-[#abd65c] text-xs font-medium px-2 py-1 mb-2 rounded hover:bg-green-500 transition">OSM</a>

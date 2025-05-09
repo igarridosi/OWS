@@ -94,18 +94,18 @@ const MapExplorerPage = () => {
   };
 
   return (
-    <div className="flex flex-col m-5 md:m-0 relative">
+    <div className="flex flex-col m-2 md:m-5 relative">
       {/* Overlay for selecting position */}
       {selectingPosition && (
         <div className="fixed inset-0 z-[999] bg-[#364153d7] rounded-3xl flex items-center justify-center pointer-events-none">
-          <div className="absolute left-1/2 top-20 z-[10000] -translate-x-1/2 bg-accent text-white px-6 py-3 rounded shadow-lg text-xl font-extrabold pointer-events-auto">
+          <div className="absolute text-center top-6 left-1/2 md:top-20 z-[10000] -translate-x-1/2 bg-accent text-white px-4 py-2 md:px-6 md:py-3 rounded shadow-lg text-base md:text-xl font-extrabold pointer-events-auto">
             Click on the map to select the spot location
           </div>
         </div>
       )}
       {/* Modal for AddSpotForm */}
       {showAddSpotForm && (
-        <div className="fixed inset-0 z-10000 rounded-3xl bg-[#ffffff92] flex items-center justify-center">
+        <div className="fixed inset-0 z-10000 bg-[#ffffffcc] rounded-3xl flex items-center justify-center p-2 md:p-0">
           <AddSpotForm
             onSubmit={handleAddSpotSubmit}
             onCancel={() => { setShowAddSpotForm(false); setSelectedPosition(null); }}
@@ -114,20 +114,21 @@ const MapExplorerPage = () => {
         </div>
       )}
       <div className="flex flex-col items-start justify-center w-full relative">
+        <p className='md:m-0 hidden md:block md:top-0 md:right-0 italic md:absolute font-bold text-darkblue text-xl'>Don't you see a spot?</p>
         <button
           type="button"
-          className="px-2 py-2 m-4 md:m-0 top-0 right-0 absolute bg-darkblue text-white rounded font-bold shadow hover:bg-accent hover:text-darkblue transition-all duration-200"
+          className="px-3 py-2 m-2 md:m-0 hidden md:block md:top-10 md:right-0 md:absolute bg-darkblue text-white rounded font-bold shadow hover:bg-accent hover:text-darkblue transition-all duration-200 text-sm md:text-base"
           onClick={handleStartAddSpot}
         >
           Add New Spot
         </button>
-        <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl items-end justify-center">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-8 w-full max-w-6xl items-end justify-center">
           {/* Main Map Area */}
-          <section className="flex-1 flex flex-col items-center w-full sm:w-[80vw] max-w-3xl">
-            <div className="w-full max-w-2xl mb-4 flex flex-col md:flex-row gap-2 items-end justify-between">
+          <section className="flex-1 flex flex-col items-center w-full sm:w-[98vw] md:w-[80vw] max-w-3xl">
+            <div className="w-full max-w-2xl mb-2 md:mb-4 flex flex-col md:flex-row gap-2 items-end justify-between px-1 md:px-0">
               <SearchBar onLocationSelect={handleLocationSelect} userSearch={userSearch} />
             </div>
-            <div className="w-full h-[60vh] rounded-2xl shadow-lg overflow-hidden bg-white">
+            <div className="w-full h-[45vh] xs:h-[55vw] sm:h-[60vw] md:h-[60vh] rounded-2xl shadow-lg overflow-hidden bg-white">
               <MapComponent
                 ref={mapComponentRef}
                 center={mapCenter}
@@ -140,26 +141,34 @@ const MapExplorerPage = () => {
                 selectedPosition={selectedPosition}
               />
             </div>
+            <p className='md:m-0 sm:hidden mt-5 block md:top-0 md:right-0 md:absolute self-start font-bold text-darkblue text-lg italic'>Don't you see a spot?</p>
+            <button
+              type="button"
+              className="w-full px-3 py-2 mt-3 justify-center md:mt-0 flex self-start sm:hidden bg-white text-darkblue rounded font-bold shadow hover:bg-accent hover:text-darkblue transition-all duration-200 text-xl md:text-base"
+              onClick={handleStartAddSpot}
+            >
+              Add New Spot
+            </button>
           </section>
           {/* Favorites Sidebar */}
-          <aside className="w-full lg:w-80 bg-white rounded-2xl shadow-lg p-6 h-[60vh] flex flex-col border border-gray-100 overflow-y-auto">
-            <div className="text-2xl py-2 font-extrabold rounded text-white bg-gradient-to-br to-accent from-[#67ee96] flex items-center justify-center gap-2 mb-8">
+          <aside className="w-full mt-4 md:mt-0 lg:w-80 bg-white rounded-2xl shadow-lg p-3 md:p-6 h-[30vh] xs:h-[35vh] sm:h-[40vh] md:h-[60vh] flex flex-col border border-gray-100 overflow-y-auto">
+            <div className="text-lg md:text-2xl py-2 font-extrabold rounded text-white bg-gradient-to-br to-accent from-[#67ee96] flex items-center justify-center gap-2 mb-4 md:mb-8">
               <span>★</span> Favorite Spots
             </div>
             {favorites.length === 0 ? (
               <div className="text-gray-400 text-md font-extrabold">No favorites yet. Click ☆ on a spot to save it!</div>
             ) : (
               favorites.map(spot => (
-                <div key={spot.id} className="flex flex-row justify-between gap-1 border-b border-dotted border-gray-700 pb-2 mb-4">
+                <div key={spot.id} className="flex flex-row justify-between gap-1 border-b border-dotted border-gray-700 pb-2 mb-2 md:mb-4">
                   <button
-                    className="text-left text-darkblue font-bold hover:underline truncate"
+                    className="text-left text-darkblue font-bold underline md:no-underline hover:underline truncate max-w-[60vw] md:max-w-[12rem]"
                     title={spot.customName || spot.tags?.city || spot.tags?.name || 'Workout Spot'}
                     onClick={() => handleFavoriteClick(spot)}
                   >
                     {spot.customName || spot.tags?.city || spot.tags?.name || 'Workout Spot'}
                   </button>
-                  <div className="flex items-end text-xs text-gray-500">
-                    <span>{spot.tags?.country || ''}</span>
+                  <div className="flex items-end text-xs text-gray-500 gap-1">
+                    <span className="hidden xs:inline">{spot.tags?.country || ''}</span>
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${(spot.lat !== undefined ? spot.lat : spot.latitude)},${(spot.lon !== undefined ? spot.lon : spot.longitude)}`}
                       target="_blank"

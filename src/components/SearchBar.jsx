@@ -90,10 +90,10 @@ const SearchBar = ({ onLocationSelect, userSearch }) => {
       <h1 className="text-2xl font-extrabold text-darkblue drop-shadow-lg mb-4 ">
         {userSearch ? `Workout Spots in ${userSearch}...` : 'Find Workout Spots'}
       </h1>
-      <div className="flex w-full max-w-xl bg-white rounded-xl shadow-md md:px-2 py-2 md:gap-2 items-center border border-gray-200 focus-within:ring-2 focus-within:ring-accent transition">
+      <div className="flex w-full max-w-xl relative bg-white rounded-xl shadow-md md:px-2 py-2 md:gap-2 items-center border border-gray-200 focus-within:ring-2 focus-within:ring-accent transition">
         <input
           type="text"
-          className="flex-1 border-none bg-transparent outline-none px-2 py-2 text-lg placeholder-darkblue"
+          className="flex-1 border-none bg-transparent font-normal outline-none px-2 py-2 text-sm md:text-lg placeholder-darkblue"
           placeholder="Search for a city or location"
           value={query}
           onChange={e => setQuery(e.target.value)}
@@ -104,10 +104,10 @@ const SearchBar = ({ onLocationSelect, userSearch }) => {
         </Button>
         <button
           type="button"
-          className="ml-1 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 transition flex items-center justify-center disabled:opacity-50"
+          className="ml-1 p-2 rounded-full right-3 absolute md:block bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 transition flex items-center justify-center disabled:opacity-50"
           title="Locate Me"
           onClick={handleLocateMe}
-          disabled={locating || loading}
+          hidden={locating || loading}
         >
           <span className="sr-only">Locate Me</span>
           {/* Inline SVG for crosshairs icon */}
