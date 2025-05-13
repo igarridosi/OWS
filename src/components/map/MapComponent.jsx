@@ -115,13 +115,13 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
       {/* Spot source toggle */}
       <div className="flex gap-2 mb-2 absolute right-2 top-2 z-[1100]">
         <button
-          className={`px-3 py-1 rounded-l font-normal ${spotSource === 'osm' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
+          className={`px-3 py-1 rounded-l ${spotSource === 'osm' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
           onClick={() => setSpotSource('osm')}
         >
           OSM Spots
         </button>
         <button
-          className={`px-3 py-1 rounded-r font-normal ${spotSource === 'community' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
+          className={`px-3 py-1 rounded-r ${spotSource === 'community' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
           onClick={() => setSpotSource('community')}
         >
           Community Spots
@@ -129,7 +129,7 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
       </div>
       {/* Map style toggle button - always top right, above map */}
       <button
-        className="absolute bottom-3 right-2 z-[1100] bg-darkblue rounded-3xl text-white font-normal px-4 py-2 shadow-xl hover:bg-white hover:text-darkblue transition"
+        className="absolute bottom-3 right-2 z-[1100] bg-darkblue rounded-3xl text-white px-4 py-2 shadow-xl hover:bg-white hover:text-darkblue transition"
         style={{ minWidth: 120 }}
         onClick={() => setMapStyle(mapStyle === 'urban' ? 'satellite' : 'urban')}
       >
@@ -228,7 +228,7 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
                             autoFocus
                             maxLength={40}
                           />
-                          <button type="submit" className="text-xs px-2 py-1 rounded bg-gray-600 text-white hover:bg-gray-700 transition">Save</button>
+                          <button type="submit" className="text-xs px-2 py-1 rounded bg-gray-600 text-white text-normal hover:bg-gray-700 transition">Save</button>
                           <button type="button" className="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300 transition" onClick={() => { setShowNameInput(null); setCustomName(''); }}>Cancel</button>
                         </form>
                       ) : (

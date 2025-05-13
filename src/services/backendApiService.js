@@ -1,3 +1,35 @@
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:3001/api', // Change if your backend runs elsewhere
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+let logoutHandler = null;
+
+export function setLogoutHandler(handler) {
+  logoutHandler = handler;
+}
+
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      if (logoutHandler) logoutHandler();
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
 // Functions to interact with YOUR Laravel backend API
 
 // Service for interacting with backend API (Laravel, future use)
@@ -51,17 +83,122 @@ export async function fetchSpotsByBounds(bounds) {
 }
 
 export async function fetchSpotReviews(spotId) {
-  const res = await fetch(`/api/spots/${spotId}/reviews`);
+  const res = await api.get(`/spots/${spotId}/reviews`);
   if (!res.ok) throw new Error('Failed to fetch reviews');
-  return res.json();
+  return res.data;
 }
 
 export async function postSpotReview(spotId, review) {
-  const res = await fetch(`/api/spots/${spotId}/reviews`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(review),
-  });
+  const res = await api.post(`/spots/${spotId}/reviews`, review);
   if (!res.ok) throw new Error('Failed to post review');
-  return res.json();
+  return res.data;
+}
+
+export async function fetchCurrentUser() {
+  try {
+    const res = await api.get('/users/me');
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+}
+
+// Community API
+export async function getCountries() {
+  const res = await api.get('/community/countries');
+  return res.data;
+}
+
+export async function joinCountry(countryId) {
+  const res = await api.post(`/community/countries/${countryId}/join`);
+  return res.data;
+}
+
+export async function getChannels(countryId) {
+  const res = await api.get(`/community/countries/${countryId}/channels`);
+  return res.data;
+}
+
+export async function createCountry(data) {
+  const res = await api.post('/community/countries', data);
+  return res.data;
+}
+
+export async function createChannel(countryId, data) {
+  const res = await api.post(`/community/countries/${countryId}/channels`, data);
+  return res.data;
+}
+
+export async function getMessages(channelId) {
+  const res = await api.get(`/community/channels/${channelId}/messages`);
+  return res.data;
+}
+
+export async function postMessage(channelId, content) {
+  const res = await api.post(`/community/channels/${channelId}/messages`, { content });
+  return res.data;
+}
+
+export async function getJoinedCountries() {
+  const res = await api.get('/community/countries/joined');
+  return res.data;
+}
+
+// Admin: Delete country
+export async function deleteCountry(countryId) {
+  const res = await api.delete(`/community/countries/${countryId}`);
+  return res.data;
+}
+
+// Admin: Edit country
+export async function editCountry(countryId, data) {
+  const res = await api.patch(`/community/countries/${countryId}`, data);
+  return res.data;
+}
+
+// Admin: Delete channel
+export async function deleteChannel(countryId, channelId) {
+  const res = await api.delete(`/community/countries/${countryId}/channels/${channelId}`);
+  return res.data;
+}
+
+// Admin: Edit channel
+export async function editChannel(countryId, channelId, data) {
+  const res = await api.patch(`/community/countries/${countryId}/channels/${channelId}`, data);
+  return res.data;
+}
+
+// Admin: Delete message
+export async function deleteMessage(channelId, messageId) {
+  const res = await api.delete(`/community/channels/${channelId}/messages/${messageId}`);
+  return res.data;
+}
+
+// Admin: Block/unblock user
+export async function blockUser(userId) {
+  const res = await api.post(`/community/users/${userId}/block`);
+  return res.data;
+}
+
+export async function unblockUser(userId) {
+  const res = await api.post(`/community/users/${userId}/unblock`);
+  return res.data;
+}
+
+// Admin: List users in a country
+export async function getCountryUsers(countryId) {
+  const res = await api.get(`/community/countries/${countryId}/users`);
+  return res.data;
+}
+
+// Admin: List all users (for global block)
+export async function getAllCommunityUsers() {
+  const res = await api.get(`/community/users`);
+  return res.data;
+}
+
+// Leave a country/community
+export async function leaveCountry(countryId) {
+  const res = await api.delete(`/community/countries/${countryId}/leave`);
+  return res.data;
 }

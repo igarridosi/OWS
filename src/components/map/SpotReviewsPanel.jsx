@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getUserFromToken } from '../../utils/helpers';
 
 const SpotReviewsPanel = ({ spot }) => {
   if (!spot) return null;
@@ -13,6 +14,9 @@ const SpotReviewsPanel = ({ spot }) => {
   const [rating, setRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
+  // Get current user (from JWT, for id)
+  const currentUser = getUserFromToken();
+
   // Fetch reviews on mount
   React.useEffect(() => {
     if (!spotId) return;
@@ -25,6 +29,9 @@ const SpotReviewsPanel = ({ spot }) => {
       .finally(() => setLoading(false));
   }, [spotId]);
 
+  // Check if user already reviewed this spot
+  const userReview = currentUser && reviews.find(r => r.userId === currentUser.id);
+
   // Handle review submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,12 +41,16 @@ const SpotReviewsPanel = ({ spot }) => {
     try {
       const res = await fetch(`http://localhost:3001/api/spots/${spotId}/reviews`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ text: reviewText, rating })
       });
       if (!res.ok) throw new Error('Failed to post review');
       const newReview = await res.json();
-      setReviews([newReview, ...reviews]);
+      // Replace or add the user's review in the reviews array
+      setReviews(prev => {
+        const filtered = prev.filter(r => r.userId !== newReview.userId);
+        return [newReview, ...filtered];
+      });
       setReviewText('');
       setRating(0);
     } catch {
@@ -62,6 +73,12 @@ const SpotReviewsPanel = ({ spot }) => {
       ))}
     </span>
   );
+
+  // Helper to get display name for a review
+  const getDisplayName = (review) => {
+    if (review.userVisibility === 'public' && review.userName) return review.userName;
+    return 'OWS User';
+  };
 
   return (
     <div className="p-6">
@@ -93,10 +110,10 @@ const SpotReviewsPanel = ({ spot }) => {
           <textarea
             className="border rounded px-2 py-1 w-full"
             rows={2}
-            placeholder="Write your review..."
+            placeholder={currentUser ? "Write your review..." : "Login to write a review"}
             value={reviewText}
             onChange={e => setReviewText(e.target.value)}
-            disabled={submitting}
+            disabled={submitting || !!userReview || !currentUser}
           />
           <div className="flex items-center gap-2">
             <span className="font-bold">Your Rating:</span>
@@ -107,7 +124,7 @@ const SpotReviewsPanel = ({ spot }) => {
                 className={`text-2xl ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
                 onClick={() => setRating(i)}
                 tabIndex={-1}
-                disabled={submitting}
+                disabled={submitting || !!userReview || !currentUser}
               >
                 ★
               </button>
@@ -116,9 +133,9 @@ const SpotReviewsPanel = ({ spot }) => {
           <button
             type="submit"
             className="px-4 py-1 rounded bg-accent text-white font-bold hover:bg-darkblue disabled:opacity-60"
-            disabled={submitting || !reviewText.trim() || !rating}
+            disabled={submitting || !reviewText.trim() || !rating || !!userReview || !currentUser}
           >
-            {submitting ? 'Posting...' : 'Post Review'}
+            {!currentUser ? 'Login to review' : userReview ? 'You already reviewed' : (submitting ? 'Posting...' : 'Post Review')}
           </button>
         </form>
         {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
@@ -134,6 +151,7 @@ const SpotReviewsPanel = ({ spot }) => {
                 <div className="flex items-center gap-2 mb-1">
                   {renderStars(r.rating || 0)}
                   <span className="text-xs text-gray-500">{r.rating ? `${r.rating}/5` : ''}</span>
+                  <span className="ml-auto text-xs font-semibold text-darkblue">{r.userName || 'OWS User'}</span>
                 </div>
                 <span>{r.text}</span>
               </li>

@@ -139,7 +139,7 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
         />
       </label>
       <div className="flex gap-2 mt-2">
-        <Button type="submit" className='px-4 py-2 bg-accent text-white block rounded hover:bg-accent transition-colors disabled:opacity-60' disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</Button>
+        <Button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</Button>
         {onCancel && (
           <button type="button" onClick={onCancel} className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300">Cancel</button>
         )}

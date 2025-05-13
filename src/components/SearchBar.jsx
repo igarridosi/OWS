@@ -93,13 +93,13 @@ const SearchBar = ({ onLocationSelect, userSearch }) => {
       <div className="flex w-full max-w-xl relative bg-white rounded-xl shadow-md md:px-2 py-2 md:gap-2 items-center border border-gray-200 focus-within:ring-2 focus-within:ring-accent transition">
         <input
           type="text"
-          className="flex-1 border-none bg-transparent font-normal outline-none px-2 py-2 text-sm md:text-lg placeholder-darkblue"
+          className="flex-1 border-none bg-transparent outline-none px-2 py-2 text-sm md:text-lg placeholder-darkblue"
           placeholder="Search for a city or location"
           value={query}
           onChange={e => setQuery(e.target.value)}
           disabled={loading || locating}
         />
-        <Button type="submit" disabled={loading || locating || !query.trim()}>
+        <Button type="submit" className='px-4 py-2 bg-accent text-white rounded hover:bg-accent transition-colors disabled:opacity-60 right-15 absolute md:block' disabled={loading || locating || !query.trim()}>
           {loading ? 'Searching...' : 'Search'}
         </Button>
         <button
