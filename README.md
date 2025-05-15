@@ -25,18 +25,6 @@ A modern, community-driven platform for discovering, sharing, and reviewing cali
 - npm or yarn
 - Backend API (Node.js/Express/MariaDB) running at `http://localhost:3001/api` (see [Backend Repo](https://github.com/igarridosi/OWS))
 
-### Installation
-```powershell
-# Clone the repository
-git clone https://github.com/igarridosi/OWS.git
-cd calisthenics_frontend
-
-# Install dependencies
-npm install
-# or
-yarn install
-```
-
 ### Development
 ```powershell
 # Start the development server
@@ -44,7 +32,6 @@ npm run dev
 # or
 yarn dev
 ```
-Visit [http://localhost:5173](http://localhost:5173) in your browser.
 
 ### Build for Production
 ```powershell
