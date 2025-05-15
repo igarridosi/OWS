@@ -83,20 +83,20 @@ export async function fetchSpotsByBounds(bounds) {
 }
 
 export async function fetchSpotReviews(spotId) {
-  const res = await api.get(`/api/spots/${spotId}/reviews`);
+  const res = await api.get(`/spots/${spotId}/reviews`);
   if (!res.ok) throw new Error('Failed to fetch reviews');
   return res.data;
 }
 
 export async function postSpotReview(spotId, review) {
-  const res = await api.post(`/api/spots/${spotId}/reviews`, review);
+  const res = await api.post(`/spots/${spotId}/reviews`, review);
   if (!res.ok) throw new Error('Failed to post review');
   return res.data;
 }
 
 export async function fetchCurrentUser() {
   try {
-    const res = await api.get('/api/users/me');
+    const res = await api.get('/users/me');
     return res.data;
   } catch (err) {
     return null;
@@ -105,121 +105,121 @@ export async function fetchCurrentUser() {
 
 // Community API
 export async function getCountries() {
-  const res = await api.get('/api/community/countries');
+  const res = await api.get('/community/countries');
   return res.data;
 }
 
 export async function joinCountry(countryId) {
-  const res = await api.post(`/api/community/countries/${countryId}/join`);
+  const res = await api.post(`/community/countries/${countryId}/join`);
   return res.data;
 }
 
 export async function getChannels(countryId) {
-  const res = await api.get(`/api/community/countries/${countryId}/channels`);
+  const res = await api.get(`/community/countries/${countryId}/channels`);
   return res.data;
 }
 
 export async function createCountry(data) {
-  const res = await api.post('/api/community/countries', data);
+  const res = await api.post('/community/countries', data);
   return res.data;
 }
 
 export async function createChannel(countryId, data) {
-  const res = await api.post(`/api/community/countries/${countryId}/channels`, data);
+  const res = await api.post(`/community/countries/${countryId}/channels`, data);
   return res.data;
 }
 
 export async function getMessages(channelId) {
-  const res = await api.get(`/api/community/channels/${channelId}/messages`);
+  const res = await api.get(`/community/channels/${channelId}/messages`);
   return res.data;
 }
 
 export async function postMessage(channelId, content) {
-  const res = await api.post(`/api/community/channels/${channelId}/messages`, { content });
+  const res = await api.post(`/community/channels/${channelId}/messages`, { content });
   return res.data;
 }
 
 export async function getJoinedCountries() {
-  const res = await api.get('/api/community/countries/joined');
+  const res = await api.get('/community/countries/joined');
   return res.data;
 }
 
 // Admin: Delete country
 export async function deleteCountry(countryId) {
-  const res = await api.delete(`/api/community/countries/${countryId}`);
+  const res = await api.delete(`/community/countries/${countryId}`);
   return res.data;
 }
 
 // Admin: Edit country
 export async function editCountry(countryId, data) {
-  const res = await api.patch(`/api/community/countries/${countryId}`, data);
+  const res = await api.patch(`/community/countries/${countryId}`, data);
   return res.data;
 }
 
 // Admin: Delete channel
 export async function deleteChannel(countryId, channelId) {
-  const res = await api.delete(`/api/community/countries/${countryId}/channels/${channelId}`);
+  const res = await api.delete(`/community/countries/${countryId}/channels/${channelId}`);
   return res.data;
 }
 
 // Admin: Edit channel
 export async function editChannel(countryId, channelId, data) {
-  const res = await api.patch(`/api/community/countries/${countryId}/channels/${channelId}`, data);
+  const res = await api.patch(`/community/countries/${countryId}/channels/${channelId}`, data);
   return res.data;
 }
 
 // Admin: Delete message
 export async function deleteMessage(channelId, messageId) {
-  const res = await api.delete(`/api/community/channels/${channelId}/messages/${messageId}`);
+  const res = await api.delete(`/community/channels/${channelId}/messages/${messageId}`);
   return res.data;
 }
 
 // Admin: Block/unblock user
 export async function blockUser(userId) {
-  const res = await api.post(`/api/community/users/${userId}/block`);
+  const res = await api.post(`/community/users/${userId}/block`);
   return res.data;
 }
 
 export async function unblockUser(userId) {
-  const res = await api.post(`/api/community/users/${userId}/unblock`);
+  const res = await api.post(`/community/users/${userId}/unblock`);
   return res.data;
 }
 
 // Admin: List users in a country
 export async function getCountryUsers(countryId) {
-  const res = await api.get(`/api/community/countries/${countryId}/users`);
+  const res = await api.get(`/community/countries/${countryId}/users`);
   return res.data;
 }
 
 // Admin: List all users (for global block)
 export async function getAllCommunityUsers() {
-  const res = await api.get(`/api/community/users`);
+  const res = await api.get(`/community/users`);
   return res.data;
 }
 
 // Leave a country/community
 export async function leaveCountry(countryId) {
-  const res = await api.delete(`/api/community/countries/${countryId}/leave`);
+  const res = await api.delete(`/community/countries/${countryId}/leave`);
   return res.data;
 }
 
 // Community Spot Inbox (Moderation)
 export async function submitCommunitySpotInbox(data) {
-  const res = await api.post('/api/community/spots/inbox', data);
+  const res = await api.post('/community/spots/inbox', data);
   return res.data;
 }
 
 export async function getCommunitySpotInbox() {
-  const res = await api.get('/api/community/spots/inbox');
+  const res = await api.get('/community/spots/inbox');
   return res.data;
 }
 
 export async function approveCommunitySpotInbox(id) {
-  const res = await api.post(`/api/community/spots/inbox/${id}/approve`);
+  const res = await api.post(`/community/spots/inbox/${id}/approve`);
   return res.data;
 }
 
 export async function rejectCommunitySpotInbox(id) {
-  const res = await api.post(`/api/community/spots/inbox/${id}/reject`);
+  const res = await api.post(`/community/spots/inbox/${id}/reject`);
   return res.data;
 }
