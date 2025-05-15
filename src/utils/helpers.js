@@ -15,5 +15,5 @@ export function getUserFromToken() {
 
 export function logout() {
   localStorage.removeItem('token');
-  window.location.href = '/login'; // Or use your router's navigation
+  window.location.href = '/'; // Or use your router's navigation
 }
