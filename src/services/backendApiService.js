@@ -202,3 +202,24 @@ export async function leaveCountry(countryId) {
   const res = await api.delete(`/community/countries/${countryId}/leave`);
   return res.data;
 }
+
+// Community Spot Inbox (Moderation)
+export async function submitCommunitySpotInbox(data) {
+  const res = await api.post('/community/spots/inbox', data);
+  return res.data;
+}
+
+export async function getCommunitySpotInbox() {
+  const res = await api.get('/community/spots/inbox');
+  return res.data;
+}
+
+export async function approveCommunitySpotInbox(id) {
+  const res = await api.post(`/community/spots/inbox/${id}/approve`);
+  return res.data;
+}
+
+export async function rejectCommunitySpotInbox(id) {
+  const res = await api.post(`/community/spots/inbox/${id}/reject`);
+  return res.data;
+}

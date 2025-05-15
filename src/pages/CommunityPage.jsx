@@ -11,7 +11,10 @@ import api, {
   blockUser,
   unblockUser,
   getAllCommunityUsers,
-  leaveCountry // <-- add this import
+  leaveCountry, // <-- add this import
+  getCommunitySpotInbox,
+  approveCommunitySpotInbox,
+  rejectCommunitySpotInbox
 } from '../services/backendApiService';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -19,6 +22,8 @@ import EmojiPicker from 'emoji-picker-react';
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 import { RxExit } from "react-icons/rx";
+import { MdEmail } from "react-icons/md";
+import { MdInfoOutline } from "react-icons/md";
 
 function CommunityPage({ user: userProp }) {
   const [countries, setCountries] = useState([]);
@@ -48,6 +53,11 @@ function CommunityPage({ user: userProp }) {
   // Admin: Show only blocked users in the user block panel
   const [showBlockedUsers, setShowBlockedUsers] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const [showInbox, setShowInbox] = useState(false);
+  const [inboxSpots, setInboxSpots] = useState([]);
+  const [inboxLoading, setInboxLoading] = useState(false);
+  const [inboxError, setInboxError] = useState('');
 
   useEffect(() => {
     api.get('/community/countries')
@@ -92,6 +102,28 @@ function CommunityPage({ user: userProp }) {
       getAllCommunityUsers().then(setAllUsers).catch(() => setAllUsers([]));
     }
   }, [adminMode, selectedCountry, user]);
+
+  const fetchInboxSpots = async () => {
+    setInboxLoading(true);
+    setInboxError('');
+    try {
+      const spots = await getCommunitySpotInbox();
+      setInboxSpots(spots);
+    } catch (err) {
+      setInboxError('Failed to load pending spots.');
+    } finally {
+      setInboxLoading(false);
+    }
+  };
+
+  const handleApproveSpot = async (id) => {
+    await approveCommunitySpotInbox(id);
+    setInboxSpots(inboxSpots.filter(s => s.id !== id));
+  };
+  const handleRejectSpot = async (id) => {
+    await rejectCommunitySpotInbox(id);
+    setInboxSpots(inboxSpots.filter(s => s.id !== id));
+  };
 
   const handleJoinCountry = async (country) => {
     if (!user) return;
@@ -225,18 +257,73 @@ function CommunityPage({ user: userProp }) {
       <h1 className="text-3xl font-bold mb-6 text-gray-800">🌍OWS Communities</h1>
 
       {user?.role === 'admin' && (
-        <button
-          className={`mb-6 px-4 py-2 rounded-lg align-self-end font-medium transition ${adminMode ? 'bg-red-600 hover:bg-red-700 text-white ' : 'bg-darkblue hover:bg-[#26a224d7]  text-white'}`}
-          onClick={handleToggleAdminMode}
-        >
-          {adminMode ? 'Exit Moderation Mode' : 'Moderate Communities'}
-        </button>
+        <div className="flex gap-4 mb-6">
+          <button
+            className={`px-4 py-2 rounded-lg font-medium transition ${adminMode ? 'bg-red-600 hover:bg-red-700 text-white ' : 'bg-darkblue hover:bg-[#26a224d7]  text-white'}`}
+            onClick={handleToggleAdminMode}
+          >
+            {adminMode ? 'Exit Moderation Mode' : 'Moderate Communities'}
+          </button>
+          <button
+            className="px-4 py-2 rounded-lg font-medium bg-accent text-white hover:bg-darkblue transition"
+            onClick={() => { setShowInbox(true); fetchInboxSpots(); }}
+          >
+            Inbox ({inboxSpots.length})
+          </button>
+        </div>
+      )}
+      {/* Admin Inbox Modal */}
+      {showInbox && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center rounded-3xl bg-[#364153cf]">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-h-[50vh] m-4 md:m-0 w-full max-w-2xl overflow-hidden relative flex flex-col">
+            <button
+              className="absolute top-3 right-4 text-gray-400 hover:text-darkblue text-2xl font-bold"
+              onClick={() => setShowInbox(false)}
+            >×</button>
+            <h2 className="text-2xl font-bold mb-4 text-darkblue">Pending Community Spots</h2>
+            {inboxLoading ? (
+              <div>Loading...</div>
+            ) : inboxError ? (
+              <div className="text-red-600">{inboxError}</div>
+            ) : inboxSpots.length === 0 ? (
+              <div className="text-gray-500">No pending spots.</div>
+            ) : (
+              <ul className="space-y-4 max-h-[60vh] overflow-y-auto">
+                {inboxSpots.map(spot => (
+                  <li key={spot.id} className="bg-gray-100 rounded-xl p-4 flex flex-col gap-2 shadow">
+                    <div className="font-bold text-lg text-darkblue">{spot.name}</div>
+                    <div className="font-normal text-md text-darkblue">Subbmited by user ID: {spot.submittedBy}</div>
+                    <div className="text-gray-700 italic text-sm">
+                      {spot.description ? spot.description : 'No description available.'}
+                    </div>
+                    <div className="flex flex-row items-center">
+                      <p className='text-md text-gray-500'>Lat: {spot.lat} | Lon: {spot.lng}</p>
+                      <a
+                        className="text-xs text-center bg-darkblue text-white no-underline rounded px-2 py-1 hover:bg-[#364153cf] transition ml-4"
+                        href={`https://www.google.com/maps/search/?api=1&query=${spot.lat},${spot.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View on Maps ⌕
+                      </a>
+                    </div>
+                    {spot.imageUrl && <img src={spot.imageUrl} alt={spot.name} className="w-32 h-32 object-cover rounded-lg border" />}
+                    <div className="flex gap-2 mt-2">
+                      <button className="px-4 py-1 rounded bg-green-600 text-white font-bold hover:bg-green-700" onClick={() => handleApproveSpot(spot.id)}>Approve</button>
+                      <button className="px-4 py-1 rounded bg-red-600 text-white font-bold hover:bg-red-700" onClick={() => handleRejectSpot(spot.id)}>Reject</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       )}
 
       {adminMode && (
         <div className="bg-[#aeb0b4a6] border-l-4 border-darkblue p-5 rounded-lg mb-6 shadow">
           <h2 className="text-xl font-bold text-darkblue mb-2">🛠 Admin Moderation Panel</h2>
-          <ul className="grid grid-cols-2 list-disc list-inside space-y-1 space-x-4 text-darkblue">
+          <ul className="grid grid-cols-1 md:grid-cols-2 list-disc list-inside space-y-1 space-x-4 text-darkblue">
             {countries.map((country) => (
               <li key={country.id} className="flex items-center bg-white gap-2 border-l-4 rounded-lg border-b-4 font-bold border-darkblue mb-2 mt-4 p-2">
                 
@@ -365,8 +452,26 @@ function CommunityPage({ user: userProp }) {
 
       {/* Country Selection */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-700 mb-4">Select a Country</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className='flex items-center gap-2 mb-4'>
+          <h2 className="text-2xl font-bold text-gray-700">Select a Country</h2>
+          <div className="relative flex items-center group">
+            <div className="relative flex items-center group">
+              <MdInfoOutline className="text-xl text-darkblue cursor-pointer ml-2" />
+            </div>
+            {/* Wrap the tooltip in a container that stays hoverable */}
+            <div className="absolute left-1/2 top-full z-20 mt-2 w-64 -translate-x-1/2 rounded-lg bg-white border border-gray-300 shadow-lg p-4 text-sm text-gray-700 font-semibold opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              If you want to add a new <b className='font-bold'>Country Community</b>, please contact us here: <br />
+              <a
+                href="mailto:openworkoutspots@gmail.com"
+                className="text-darkblue font-bold hover:text-accent hover:underline flex items-center mt-2"
+              >
+                <MdEmail className="mr-2" />
+                openworkoutspots@gmail.com
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {countries.map((country) => {
             const isJoined = joinedCountries.some(jc => jc.id === country.id);
             return (
@@ -413,13 +518,13 @@ function CommunityPage({ user: userProp }) {
                 {newCountry.flagEmoji || '🚩'}
               </button>
               {showEmojiPicker && (
-                <div className="absolute right-60 z-50">
+                <div className="absolute bottom-44 right-10 md:bottom-3 md:right-62 z-50 border-2 border-darkblue rounded-lg">
                   <EmojiPicker
                     onEmojiClick={(emojiData) => {
                       setNewCountry({ ...newCountry, flagEmoji: emojiData.emoji });
                       setShowEmojiPicker(false);
                     }}
-                    height={300}
+                    height={400}
                     width={300}
                   />
                 </div>
@@ -435,9 +540,27 @@ function CommunityPage({ user: userProp }) {
       {/* Channel Selection */}
       {selectedCountry && (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-700 mb-3">
-            Channels in {selectedCountry.name}
-          </h2>
+          <div className='flex items-center gap-2 mb-4'>
+            <h2 className="text-xl font-bold text-gray-700">
+              Channels in {selectedCountry.name}
+            </h2>
+            <div className="relative flex items-center group">
+              <div className="relative flex items-center group">
+                <MdInfoOutline className="text-xl text-darkblue cursor-pointer ml-2" />
+              </div>
+              {/* Wrap the tooltip in a container that stays hoverable */}
+              <div className="absolute left-1/2 top-full z-20 mt-2 w-64 -translate-x-1/2 rounded-lg bg-white border border-gray-300 shadow-lg p-4 text-sm text-gray-700 font-semibold opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                If you want to add a new <b className='font-bold underline'>Channel</b> for this Community, please contact us here:<br />
+                <a
+                  href="mailto:openworkoutspots@gmail.com"
+                  className="text-darkblue font-bold hover:text-accent hover:underline flex items-center mt-2"
+                >
+                  <MdEmail className="mr-2"/>
+                  openworkoutspots@gmail.com
+                </a>
+              </div>
+            </div>
+          </div>
           {(joinedCountries.some(jc => jc.id === selectedCountry.id) || adminMode) ? (
             <div className="flex flex-wrap gap-2">
               {channels.map((channel) => (
@@ -484,7 +607,7 @@ function CommunityPage({ user: userProp }) {
                 ))}
               </div>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="bg-white/90 rounded-xl mt-10 p-4 border-2 border-darkblue shadow text-darkblue font-bold text-center">
+                <div className="bg-white/90 rounded-xl mt-15 p-2 md:mt-10 md:p-4 border-2 border-darkblue shadow text-darkblue font-bold text-center">
                   You must join this community to view and participate in its channels.
                 </div>
               </div>
@@ -548,7 +671,7 @@ function CommunityPage({ user: userProp }) {
               <input
                 type="text"
                 placeholder="Type your message..."
-                className="border rounded flex-1 px-3 py-2"
+                className="rounded-lg border-2 border-darkblue flex-1 px-3 py-2"
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 required

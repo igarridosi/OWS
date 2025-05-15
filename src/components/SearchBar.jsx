@@ -65,14 +65,14 @@ const SearchBar = ({ onLocationSelect, userSearch }) => {
     }
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords;
+        const { lat, lng } = position.coords;
         try {
-          const result = await reverseGeocode(latitude, longitude);
+          const result = await reverseGeocode(lat, lng);
           let zoomLevel = 13;
           if (result?.address?.city || result?.address?.town || result?.address?.village) {
             zoomLevel = 12;
           }
-          onLocationSelect(latitude, longitude, zoomLevel);
+          onLocationSelect(lat, lng, zoomLevel);
         } catch (e) {
           setError('Could not determine your city.');
         }

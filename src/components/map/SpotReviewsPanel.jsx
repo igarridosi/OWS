@@ -3,7 +3,7 @@ import { getUserFromToken } from '../../utils/helpers';
 
 const SpotReviewsPanel = ({ spot }) => {
   if (!spot) return null;
-  const { name, description, imageUrl, latitude, longitude, _id, id } = spot;
+  const { name, description, imageUrl, lat, lng, _id, id } = spot;
   const spotId = _id || id;
 
   // Local state for reviews
@@ -81,7 +81,7 @@ const SpotReviewsPanel = ({ spot }) => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 m-2">
       <h2 className="text-xl font-bold mb-2">Reviews & Gallery</h2>
       {imageUrl && (
         <img
@@ -95,7 +95,7 @@ const SpotReviewsPanel = ({ spot }) => {
         <div className="font-bold text-lg">{name}</div>
         <div className="text-gray-700">{description}</div>
         <div className="text-xs text-gray-500 mt-2">
-          Lat: {latitude} | Lon: {longitude}
+          Lat: {lat} | Lon: {lng}
         </div>
         {avgRating && (
           <div className="flex items-center gap-2 mt-2">

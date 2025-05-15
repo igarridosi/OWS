@@ -67,6 +67,10 @@ button{
     .leaflet-popup-content-wrapper{
         display: flex;
         justify-content: center;
-        width: 200px !important;
+        width: 260px !important;
     }
+}
+
+.favicon{
+    border-radius: 20%;
 }

@@ -7,6 +7,11 @@ import ProfileSettings from './components/common/ProfileSettings';
 import { getUserFromToken, logout } from './utils/helpers';
 import { fetchCurrentUser, setLogoutHandler } from './services/backendApiService';
 import CommunityPage from './pages/CommunityPage';
+import AboutPage from './pages/AboutPage';
+
+// React Icons
+import { MdEmail } from "react-icons/md";
+import { FaGithub } from "react-icons/fa";
 
 function App() {
   // Ref for scrolling to map
@@ -28,6 +33,7 @@ function App() {
   }, []);
 
   const isCommunity = hash === '#community';
+  const isAbout = hash === '#about';
 
   // Fetch user profile on mount if token exists
   useEffect(() => {
@@ -188,7 +194,7 @@ function App() {
         </div>
       )}
       {/* Hero Section */}
-      {!isCommunity && (
+      {!isCommunity && !isAbout &&(
         <section className="flex flex-col items-center justify-center py-8 md:py-20 text-center animate-fade-in px-2 sm:px-4 sm:max-w-3xl">
           <h1 className="text-5xl sm:text-4xl md:text-8xl font-extrabold text-darkblue drop-shadow-lg mb-4 leading-tight">Discover <span className="bg-gradient-to-r to-[#bcc4e0] via-[#dee1e9] from-white underline underline-offset-4 decoration-6 bg-clip-text text-white">Workout Spots</span> all around the World</h1>
           <p className="text-base sm:text-lg md:text-2xl text-white max-w-4xl mx-auto mt-4 mb-8 italic">Discover, review, and share the best outdoor calisthenics and workout locations near you. Join a community passionate about fitness and the outdoors!</p>
@@ -198,12 +204,16 @@ function App() {
       {/* Main Content */}
       <main ref={mapSectionRef} className="flex flex-col justify-center items-center flex-1 w-full pb-8 mt-6 md:pb-12 px-1 sm:px-2">
         <div className="w-full max-w-5xl m-4 md:m-0 bg-white/80 rounded-3xl shadow-2xl p-2 md:p-4 border border-white/60 backdrop-blur-md animate-fade-in-up">
-          {/* Show CommunityPage if hash is #community, else MapExplorerPage */}
-          {isCommunity ? <CommunityPage user={user} /> : <MapExplorerPage />}
+          {/* Show CommunityPage if hash is #community, AboutPage if #about, else MapExplorerPage */}
+          {isCommunity ? <CommunityPage user={user} /> : isAbout ? <AboutPage /> : <MapExplorerPage user={user} setShowAuthModal={setShowAuthModal} setAuthMode={setAuthMode} />}
         </div>
       </main>
       {/* Footer */}
         <footer className="w-full text-center py-3 md:py-4 text-darkblue bg-white/30 backdrop-blur-md rounded-t-3xl shadow-inner border-t border-white/40 mt-4 md:mt-8 text-sm md:text-base">
+          <ul className="list-disc list-inside text-gray-700 space-y-2 text-lg flex justify-center items-center flex-col mb-4">
+            <li className='flex items-center'><MdEmail className='mr-2'/> <a href="mailto:openworkoutspots@gmail.com" className="text-darkblue font-bold hover:text-accent hover:underline"> openworkoutspots@gmail.com</a></li>
+            <li className='flex items-center'><FaGithub className='mr-2'/> <a href="https://github.com/igarridosi/OWS" target="_blank" rel="noopener noreferrer" className="text-darkblue font-bold hover:text-accent hover:underline">github.com/igarridosi/OWS</a></li>
+          </ul>
           © {new Date().getFullYear()} Open Workout Spots. All rights reserved.
         </footer>
     </div>

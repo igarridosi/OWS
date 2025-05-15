@@ -42,7 +42,7 @@ function SelectPositionHandler({ selectingPosition, onSelectPosition }) {
   return null;
 }
 
-const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER, zoom = DEFAULT_ZOOM, flyToZoom, searchBounds, selectingPosition, onSelectPosition, selectedPosition }, ref) {
+const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER, zoom = DEFAULT_ZOOM, flyToZoom, searchBounds, selectingPosition, onSelectPosition, selectedPosition, user, onRequireLogin }, ref) {
   const [spots, setSpots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -122,7 +122,13 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
         </button>
         <button
           className={`px-3 py-1 rounded-r ${spotSource === 'community' ? 'bg-accent text-white' : 'bg-white text-darkblue border'}`}
-          onClick={() => setSpotSource('community')}
+          onClick={() => {
+            if (!user) {
+              onRequireLogin && onRequireLogin();
+              return;
+            }
+            setSpotSource('community');
+          }}
         >
           Community Spots
         </button>
@@ -159,12 +165,12 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
         {spots
           .filter(spot =>
             (spot.lat !== undefined && spot.lon !== undefined) ||
-            (spot.latitude !== undefined && spot.longitude !== undefined)
+            (spot.lat !== undefined && spot.lng !== undefined)
           )
           .map((spot) => {
             // Normalize coordinates
-            const lat = spot.lat !== undefined ? spot.lat : spot.latitude;
-            const lon = spot.lon !== undefined ? spot.lon : spot.longitude;
+            const lat = spot.lat !== undefined ? spot.lat : spot.lat;
+            const lon = spot.lon !== undefined ? spot.lon : spot.lng;
             return (
               <Marker key={spot.id || spot._id} position={[lat, lon]} icon={customIcon}>
                 <Popup
@@ -255,7 +261,7 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
       {/* Reviews & Gallery Modal */}
       {openReviewsSpot && (
         <div className="fixed inset-0 z-[2000] bg-[#364153c0] rounded-3xl flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full relative">
+          <div className="bg-white rounded-2xl shadow-2xl w-[90vw] sm:max-w-2xl sm:w-full relative">
             <button
               className="absolute top-2 right-2 text-2xl text-gray-500 hover:text-red-500 font-bold z-10"
               onClick={() => setOpenReviewsSpot(null)}

@@ -95,7 +95,7 @@ const ProfileSettings = ({ onClose, onProfileUpdate }) => {
   };
 
   return (
-    <div className="w-[30vw] p-6 bg-white rounded-xl shadow-lg">
+    <div className="w-[90vw] sm:w-[30vw] p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-darkblue">Profile Settings</h2>
       <form onSubmit={handleSave} className="flex flex-col font-normal">
         <div>
@@ -144,20 +144,20 @@ const ProfileSettings = ({ onClose, onProfileUpdate }) => {
         <div className="flex gap-2 justify-between mt-2">
           <div className='flex gap-2'>
             <button
-                    className="text-center px-5 py-2 rounded bg-gradient-to-r from-darkblue to-[#de3b3b] text-white shadow-lg hover:scale-105 transition-all duration-200 border-none"
+                    className="text-center px-2 py-1 sm:px-5 sm:py-2 rounded bg-gradient-to-r from-darkblue to-[#de3b3b] text-white shadow-lg hover:scale-105 transition-all duration-200 border-none"
                     onClick={handleLogout}
                 >
                     Logout
             </button>
             <button
               onClick={handleDeleteAccount}
-              className="text-center px-5 py-2 rounded bg-gradient-to-r from-[#de3b3b] to-darkblue text-white shadow-lg hover:scale-105 transition-all duration-200 border-none"
+              className="text-center px-2 py-1 sm:px-5 sm:py-2 rounded bg-gradient-to-r from-[#de3b3b] to-darkblue text-white shadow-lg hover:scale-105 transition-all duration-200 border-none"
             >
               Delete My Account
             </button>
           </div>
           <div className='flex gap-2'>
-              <Button type="button" onClick={onClose} className="bg-gray-200 px-4 py-2 rounded text-darkblue">Cancel</Button>
+              <Button type="button" onClick={onClose} className="bg-gray-200 px-2 py-1 sm:px-5 sm:py-2 rounded text-darkblue">Cancel</Button>
               <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button>
           </div>
         </div>

@@ -4,8 +4,8 @@ import Button from '../common/Button';
 const initialState = {
   name: '',
   description: '',
-  latitude: '',
-  longitude: '',
+  lat: '',
+  lng: '',
   image: null,
 };
 
@@ -20,7 +20,7 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
   // When latlng changes, update form coordinates
   useEffect(() => {
     if (latlng) {
-      setForm((prev) => ({ ...prev, latitude: latlng.lat, longitude: latlng.lng }));
+      setForm((prev) => ({ ...prev, lat: latlng.lat, lng: latlng.lng }));
     }
   }, [latlng]);
 
@@ -35,7 +35,7 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!form.name || !form.latitude || !form.longitude) {
+    if (!form.name || !form.lat || !form.lng) {
       setError('Name and location are required.');
       return;
     }
@@ -64,8 +64,8 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
       const spotData = {
         name: form.name,
         description: form.description,
-        latitude: form.latitude,
-        longitude: form.longitude,
+        lat: latlng.lat,
+        lng: latlng.lng,
         imageUrl,
       };
       if (onSubmit) await onSubmit(spotData);
@@ -138,6 +138,7 @@ const AddSpotForm = ({ onSubmit, onCancel, latlng }) => {
           required
         />
       </label>
+      <p className='font-bold text-white italic'><span className="text-red-500">* </span> the submission of the new spot will be verified by our administrators before being published.</p>
       <div className="flex gap-2 mt-2">
         <Button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</Button>
         {onCancel && (
