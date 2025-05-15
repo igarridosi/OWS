@@ -99,7 +99,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#98f0b7] via-[#2ec362] to-accent flex flex-col items-center justify-between relative overflow-x-hidden">
-          <img src="src/assets/OWS-logo.png" alt="Calisthenics Hub Logo" className="h-20 md:h-26 object-contain max-w-[100px] md:max-w-[120px] p-1 mt-2 md:mt-0" />
+          <img src="/OWS-logo.png" alt="Calisthenics Hub Logo" className="h-20 md:h-26 object-contain max-w-[100px] md:max-w-[120px] p-1 mt-2 md:mt-0" />
           <header className="w-full bg-white/30 backdrop-blur-md shadow-lg px-4 md:px-8 py-4 flex flex-col md:flex-row items-center md:justify-around justify-center sticky top-0 z-50 border-b border-white/40 gap-2 md:gap-0 mt-5 md:mt-0">
             <span className="text-4xl sm:text-3xl md:text-4xl font-extrabold text-darkblue tracking-tight drop-shadow-lg font-sans text-center md:text-left m-3 md:m-0">Open Workout Spots</span>
             <nav className="flex flex-col md:flex-row gap-2 md:gap-4 lg:gap-8 items-center w-full md:w-auto justify-center">
