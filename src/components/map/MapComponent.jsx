@@ -10,6 +10,7 @@ import { useFavoriteSpots } from '../../hooks/useFavoriteSpots';
 import SpotReviewsPanel from './SpotReviewsPanel';
 import '../../index.css'
 import { useMapEvent } from 'react-leaflet';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const DEFAULT_CENTER = [50, 10]; // Europe-wide view
 const DEFAULT_ZOOM = 4;
@@ -91,7 +92,7 @@ const MapComponent = forwardRef(function MapComponent({ center = DEFAULT_CENTER,
     if (spotSource !== 'community') return;
     setLoading(true);
     setError(null);
-    fetch('http://localhost:3001/api/spots')
+    fetch(`${API_URL}/spots`)
       .then(res => res.json())
       .then(setSpots)
       .catch(() => setError('Failed to load community spots'))

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getUserFromToken } from '../../utils/helpers';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SpotReviewsPanel = ({ spot }) => {
   if (!spot) return null;
@@ -22,7 +23,7 @@ const SpotReviewsPanel = ({ spot }) => {
     if (!spotId) return;
     setLoading(true);
     setError('');
-    fetch(`http://localhost:3001/api/spots/${spotId}/reviews`)
+    fetch(`${API_URL}/spots/${spotId}/reviews`)
       .then(res => res.ok ? res.json() : [])
       .then(data => setReviews(Array.isArray(data) ? data : []))
       .catch(() => setError('Failed to load reviews'))
@@ -39,7 +40,7 @@ const SpotReviewsPanel = ({ spot }) => {
     setSubmitting(true);
     setError('');
     try {
-      const res = await fetch(`http://localhost:3001/api/spots/${spotId}/reviews`, {
+      const res = await fetch(`${API_URL}/spots/${spotId}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ text: reviewText, rating })
