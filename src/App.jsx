@@ -64,7 +64,7 @@ function App() {
 
   const handleStartExploring = () => {
     if (mapSectionRef.current) {
-      const target = mapSectionRef.current.getBoundingClientRect().top + window.scrollY;
+      const target = mapSectionRef.current.getBoundingClientRect().top + window.scrollY - 30;
       const duration = 1100; // duration in milliseconds
       const start = window.scrollY;
       const startTime = performance.now();

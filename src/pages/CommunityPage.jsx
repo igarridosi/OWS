@@ -59,6 +59,8 @@ function CommunityPage({ user: userProp }) {
   const [inboxLoading, setInboxLoading] = useState(false);
   const [inboxError, setInboxError] = useState('');
 
+  const [nameWarning, setNameWarning] = useState('');
+
   useEffect(() => {
     api.get('/community/countries')
       .then(res => setCountries(res.data))
@@ -144,7 +146,12 @@ function CommunityPage({ user: userProp }) {
 
   const handlePostMessage = async (e) => {
     e.preventDefault();
+    setNameWarning('');
     if (!user || !messageInput.trim() || !selectedChannel) return;
+    if (!user.name || user.name.trim() === '') { 
+      setNameWarning('You must set a Name in your profile settings before posting messages.');
+      return;
+    }
     try {
       const res = await api.post(`/community/channels/${selectedChannel.id}/messages`, { content: messageInput });
       setMessages([...messages, res.data]);
@@ -664,22 +671,27 @@ function CommunityPage({ user: userProp }) {
                     )}
                   </div>
                 ))
-            )}
+      )}
           </div>
           {user && (
-            <form onSubmit={handlePostMessage} className="mt-4 flex gap-2">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="rounded-lg border-2 border-darkblue flex-1 px-3 py-2"
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                required
-              />
-              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                Send
-              </button>
-            </form>
+            <>
+              {nameWarning && (
+                <div className="text-red-600 font-bold mb-2">{nameWarning}</div>
+              )}
+              <form onSubmit={handlePostMessage} className="mt-4 flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  className="rounded-lg border-2 border-darkblue flex-1 px-3 py-2"
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  required
+                />
+                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                  Send
+                </button>
+              </form>
+            </>
           )}
         </div>
       )}
