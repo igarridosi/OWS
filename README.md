@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/igarridosi/OWS)
+
 # Open Workout Spots (OWS)
 
 A modern, community-driven platform for discovering, sharing, and reviewing calisthenics and outdoor fitness locations worldwide. Built with React (Vite), Node.js/Express, and MariaDB.
